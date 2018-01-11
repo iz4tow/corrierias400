@@ -64,27 +64,35 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 	global errore_campi
 	global peso
 	
+	print("\n\n############################################################\n############################################################\nERRORI CAMPI:\n")
 	codcli=app.getEntry("codicecliente").upper()
 	if codcli=="":
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","MANCA IL CAMPO -> CODICE CLIENTE")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("MANCA IL CAMPO -> CODICE CLIENTE")
 		errore_campi=1
-	if len(codcli)>6:
-		errore_campi=1
+	if len(codcli)>10:
+			print("CAMPO ERRATO-> CODICE CLIENTE")
+			errore_campi=1
 		
 	codvettore=app.getEntry("codicevettore").upper()
 	if codvettore=="":
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","MANCA IL CAMPO -> CODICE VETTORE S72")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("MANCA IL CAMPO -> CODICE VETTORE S72")
 		errore_campi=1
+		if len(codcli)>6:
+			print("CAMPO ERRATO -> CODICE VETTORE")
+			errore_campi=1
 		
 	ragsocvettore=app.getEntry("ragsocvettore").upper()
 	if ragsocvettore=="":
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","MANCA IL CAMPO -> RAGIONE SOCIALE TRASPORTATORE")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("MANCA IL CAMPO -> RAGIONE SOCIALE TRASPORTATORE")
 		errore_campi=1
 		
 	indirizzo=app.getEntry("indirizzo").upper()
@@ -92,6 +100,7 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","MANCA IL CAMPO -> indirizzo")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("MANCA IL CAMPO -> INDIRIZZO")
 		errore_campi=1
 		
 	localita=app.getEntry("localita").upper()
@@ -99,6 +108,7 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","MANCA IL CAMPO -> LOCALITA")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("MANCA IL CAMPO -> LOCALITA")
 		errore_campi=1
 		
 	provincia=app.getEntry("provincia").upper()
@@ -106,12 +116,14 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","MANCA IL CAMPO -> PROVINCIA")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("MANCA IL CAMPO -> PROVINCIA")
 		errore_campi=1
 
 	if len(provincia)!=2:
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","CAMPO ERRATO -> PROVINCIA")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("ERRORE CAMPO -> PROVINCIA")
 		errore_campi=1
 	
 	cap=app.getEntry("cap").upper()
@@ -119,12 +131,14 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","MANCA IL CAMPO -> C.A.P.")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("MANCA IL CAMPO -> CAP")
 		errore_campi=1
 
 	if len(cap)!=5:
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","CAMPO ERRATO -> CAP")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("ERRORE CAMPO -> CAP")
 		errore_campi=1
 
 		
@@ -133,6 +147,7 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","MANCA IL CAMPO -> BARTOLINI?")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("MANCA IL CAMPO -> BARTOLINI")
 		errore_campi=1
 
 		
@@ -141,6 +156,7 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","MANCA IL CAMPO -> MAGAZZINO?")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("MANCA IL CAMPO -> MAGAZZINO")
 		errore_campi=1
 
 	if magazzino=="BORGHETTO":
@@ -151,12 +167,13 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		magazzino="***"
 	
 	peso=app.getEntry("peso").upper()
-	if peso=='':
+	if peso=="":
 		peso="999999"
 	if len(peso)>6:
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","CAMPO ERRATO -> PESO")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("ERRORE CAMPO -> PESO")
 		errore_campi=1
 		
 	
@@ -165,7 +182,20 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","CAMPO ERRATO -> NAZIONE")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		print("MANCA IL CAMPO -> NAZIONE")
 		errore_campi=1
+	print("\n\n############################################################\n############################################################\nINFO DEBUG CAMPI:")
+	print("CODICE CLIENTE: "+codcli)
+	print("CODICE VETTORE S72: "+codvettore)
+	print("RAGIONE SOCIALE: "+ragsocvettore)
+	print("LOCALITA: "+localita)
+	print("PROVINCIA: "+provincia)
+	print("CAP: "+cap)
+	print("INDIRIZZO: "+indirizzo)
+	print("NAZIONE: "+nazione)
+	print("PESO: "+peso)
+	print("BARTOLINI: "+bartolini)
+	print("MAGAZZINO: "+magazzino)
 
 ###############################################################################################################################
 ####################################FINE CONTROLLO CAMPI INSERITI@@@@@@@@@@@@##################################################
@@ -199,15 +229,23 @@ def press(button):
 	if button == "Inserisci":
 		errore=0
 		errore_campi=0
+		esiste=0
+		esiste_cli=0
 		campi()
 		if errore_campi!=0:
+			print("ERRORE CAMPI!")
 			return
 			
 		curs.execute("SELECT * FROM CTEGRPDAT.TRTRA00F where TRCDEC='"+codvettore+"' AND TRCDTB='VET' AND TRCCOM='"+committente+"'")
 		esiste=len(curs.fetchall())#lunghezza array estratto, conto le righe insomma...
 		curs.execute("SELECT * FROM CTEDATBOR.TXVET20F where VPCLIF='"+codcli+"' AND VPPMAX='"+peso+"'")
 		esiste_cli=len(curs.fetchall())#lunghezza array estratto, conto le righe insomma...
+		print("ESISTE: "+str(esiste)+" "+str(esiste_cli))
 		if esiste>0 or esiste_cli>0:
+			if esiste>0 and esiste_cli>0:
+				app.showLabel("avviso1")
+				app.setLabel("avviso1","Sembra sia già stato inserito da qualcun altro")
+				app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 			if esiste_cli<1:
 				app.showLabel("avviso1")
 				app.setLabel("avviso1","CORRIERE già esistente")
@@ -215,10 +253,6 @@ def press(button):
 			if esiste<1:
 				app.showLabel("avviso1")
 				app.setLabel("avviso1","CLIENTE E PESO già associati")
-				app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
-			if esiste>1 and esiste_cli>1:
-				app.showLabel("avviso1")
-				app.setLabel("avviso1","Sembra sia già stato inserito da qualcun altro")
 				app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		else:
 			onetonintynine= range(1,99)
