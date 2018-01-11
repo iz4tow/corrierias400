@@ -1,7 +1,6 @@
 # import the library
 from appJar import gui
 
-#import pyodbc
 import jaydebeapi
 import jpype
 
@@ -14,12 +13,12 @@ jar = 'db2as400.jar' # location of the jdbc driver jar
 args='-Djava.class.path=%s' % jar
 jvm = jpype.getDefaultJVMPath()
 jpype.startJVM(jvm, args)
-conn=jaydebeapi.connect('com.ibm.as400.access.AS400JDBCDriver', 'jdbc:as400://10.1.12.180:50000',['QSECOFR','tony34']) #connessione al db2
+conn=jaydebeapi.connect('com.ibm.as400.access.AS400JDBCDriver', 'jdbc:as400://10.1.12.80:50000',['QSECOFR','tony34']) #connessione al db2
 curs=conn.cursor()
 #########FINE DB2
 
 
-##############################################APERTURA FILE INI IMPOSAZIONI###############################################################
+##############################################APERTURA FILE INI IMPOSTAZIONI###############################################################
 file = open("setting.ini", "r") 
 for riga in file:
 	if riga.find("|")!=-1: #SOLO LE RIGHE DELLE IMPOSTAZIONI CHE CONTENGONO IL | VENGONO CONSIDERATE, GLI ALTRI SONO COMMENTI
@@ -71,7 +70,8 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.setLabel("avviso1","MANCA IL CAMPO -> CODICE CLIENTE")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
+	if len(codcli)>6:
+		errore_campi=1
 		
 	codvettore=app.getEntry("codicevettore").upper()
 	if codvettore=="":
@@ -79,7 +79,6 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.setLabel("avviso1","MANCA IL CAMPO -> CODICE VETTORE S72")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
 		
 	ragsocvettore=app.getEntry("ragsocvettore").upper()
 	if ragsocvettore=="":
@@ -87,7 +86,6 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.setLabel("avviso1","MANCA IL CAMPO -> RAGIONE SOCIALE TRASPORTATORE")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
 		
 	indirizzo=app.getEntry("indirizzo").upper()
 	if indirizzo=="":
@@ -95,7 +93,6 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.setLabel("avviso1","MANCA IL CAMPO -> indirizzo")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
 		
 	localita=app.getEntry("localita").upper()
 	if localita=="":
@@ -103,7 +100,6 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.setLabel("avviso1","MANCA IL CAMPO -> LOCALITA")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
 		
 	provincia=app.getEntry("provincia").upper()
 	if provincia=="":
@@ -111,13 +107,12 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.setLabel("avviso1","MANCA IL CAMPO -> PROVINCIA")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
+
 	if len(provincia)!=2:
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","CAMPO ERRATO -> PROVINCIA")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
 	
 	cap=app.getEntry("cap").upper()
 	if cap=="":
@@ -125,13 +120,13 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.setLabel("avviso1","MANCA IL CAMPO -> C.A.P.")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
+
 	if len(cap)!=5:
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","CAMPO ERRATO -> CAP")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
+
 		
 	bartolini=app.getRadioButton("bartolini").upper()
 	if bartolini=="":
@@ -139,7 +134,7 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.setLabel("avviso1","MANCA IL CAMPO -> BARTOLINI?")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
+
 		
 	magazzino=app.getRadioButton("magazzino").upper()
 	if magazzino=="":
@@ -147,7 +142,7 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.setLabel("avviso1","MANCA IL CAMPO -> MAGAZZINO?")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
+
 	if magazzino=="BORGHETTO":
 		magazzino="BOR"
 	if magazzino=="TREZZANO":
@@ -163,7 +158,6 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.setLabel("avviso1","CAMPO ERRATO -> PESO")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
 		
 	
 	nazione=app.getEntry("nazione").upper()
@@ -172,7 +166,7 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		app.setLabel("avviso1","CAMPO ERRATO -> NAZIONE")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		errore_campi=1
-		return
+
 ###############################################################################################################################
 ####################################FINE CONTROLLO CAMPI INSERITI@@@@@@@@@@@@##################################################
 ###############################################################################################################################
@@ -211,10 +205,21 @@ def press(button):
 			
 		curs.execute("SELECT * FROM CTEGRPDAT.TRTRA00F where TRCDEC='"+codvettore+"' AND TRCDTB='VET' AND TRCCOM='"+committente+"'")
 		esiste=len(curs.fetchall())#lunghezza array estratto, conto le righe insomma...
-		if esiste>0:
-			app.showLabel("avviso1")
-			app.setLabel("avviso1","RECORD DUPLICATO")
-			app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		curs.execute("SELECT * FROM CTEDATBOR.TXVET20F where VPCLIF='"+codcli+"' AND VPPMAX='"+peso+"'")
+		esiste_cli=len(curs.fetchall())#lunghezza array estratto, conto le righe insomma...
+		if esiste>0 or esiste_cli>0:
+			if esiste_cli<1:
+				app.showLabel("avviso1")
+				app.setLabel("avviso1","CORRIERE già esistente")
+				app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+			if esiste<1:
+				app.showLabel("avviso1")
+				app.setLabel("avviso1","CLIENTE E PESO già associati")
+				app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+			if esiste>1 and esiste_cli>1:
+				app.showLabel("avviso1")
+				app.setLabel("avviso1","Sembra sia già stato inserito da qualcun altro")
+				app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 		else:
 			onetonintynine= range(1,99)
 			for x in letter_range:
@@ -246,31 +251,34 @@ def press(button):
 					app.showLabel("avviso1")
 					app.setLabel("avviso1","!!!ERRORE INSERIMENTO IN BATRA00F - CONTATTARE CED!!!")
 					app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO1
+					print("INSERT INTO CTEDATBOR.BATRA00F (BTATRC,BTCTRA,BTRAGS,BTRAGA,BTINDI,BTLOCA,BTPROV,BTCCAP,BTCNAZ,BTCFIS,BTPIVA,BTCBAN,BTCAGE,BTDAGE,BTCVAL,BTPFUT,BTDCRE,BTDAGG) VALUES ('','"+codvettore+"','"+ragsocvettore+"','','"+indirizzo+"','"+localita+"','"+provincia+"','"+cap+"','','.','','','','','','"+utente+"','20"+data+"','00000000')")
 			if errore==0:
 				try:#INSERIMENTO IN DIVET00F
-					curs.execute("INSERT INTO CTEDATBOR.DIVET00F (VEATRC,VECDVE,VEPRIO,VERAGS,VEINDI,VELOCA,VECDNZ,VECCAP,VEFCAP,VETELE,VERIFP,VENOTE,VECDTR,VETITR,VEDTCR,VEDTAG,VEPFUT,VENCON,VECODF,VEPIVA) VALUES ('','"+elemento+"','5','"+ragsocvettore+"','"+indirizzo+"','"+localita+"','','"+cap+"','','','','','"+codvettore+"','1','20"+data+"','00000000','"+utente+"','"+peso+"','','')")
+					curs.execute("INSERT INTO CTEDATBOR.DIVET00F (VEATRC,VECDVE,VEPRIO,VERAGS,VEINDI,VELOCA,VECDNZ,VECCAP,VEFCAP,VETELE,VERIFP,VENOTE,VECDTR,VETITR,VEDTCR,VEDTAG,VEPFUT,VENCON,VECODF,VEPIVA) VALUES ('','"+elemento+"','5','"+ragsocvettore+"','"+indirizzo+"','"+localita+"','','"+cap+"','','','','','"+codvettore+"','1','20"+data+"','00000000','"+utente+"','9999999','','')")
 				except:
 					errore=1
 					app.showLabel("avviso1")
 					app.setLabel("avviso1","!!!ERRORE INSERIMENTO IN DIVET00F - CONTATTARE CED!!!")
 					app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+					print("INSERT INTO CTEDATBOR.DIVET00F (VEATRC,VECDVE,VEPRIO,VERAGS,VEINDI,VELOCA,VECDNZ,VECCAP,VEFCAP,VETELE,VERIFP,VENOTE,VECDTR,VETITR,VEDTCR,VEDTAG,VEPFUT,VENCON,VECODF,VEPIVA) VALUES ('','"+elemento+"','5','"+ragsocvettore+"','"+indirizzo+"','"+localita+"','','"+cap+"','','','','','"+codvettore+"','1','20"+data+"','00000000','"+utente+"','9999999','','')")
 			if errore==0:
 				try:#INSERIMENTO IN TXVET20F
-					curs.execute("INSERT INTO CTEDATBOR.TXVET20F (VPATRC,VPCCOM,VPCVET,VPPMAX,VPPFUT,VPDCRE,VPDAGG,VPCMAG,VPCLIF) VALUES ('','"+committente+"','"+codvettore+"','999999','"+utente+"','20"+data+"','00000000','"+magazzino+"','"+codcli+"')")
+					curs.execute("INSERT INTO CTEDATBOR.TXVET20F (VPATRC,VPCCOM,VPCVET,VPPMAX,VPPFUT,VPDCRE,VPDAGG,VPCMAG,VPCLIF) VALUES ('','"+committente+"','"+elemento+"','"+peso+"','"+utente+"','20"+data+"','00000000','"+magazzino+"','"+codcli+"')")
 				except:
 					errore=1
 					app.showLabel("avviso1")
 					app.setLabel("avviso1","!!!ERRORE INSERIMENTO IN TXVET20F - CONTATTARE CED!!!")
 					app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+					print("INSERT INTO CTEDATBOR.TXVET20F (VPATRC,VPCCOM,VPCVET,VPPMAX,VPPFUT,VPDCRE,VPDAGG,VPCMAG,VPCLIF) VALUES ('','"+committente+"','"+elemento+"','"+peso+"','"+utente+"','20"+data+"','00000000','"+magazzino+"','"+codcli+"')")
 			
 			##########SOLO BRT!!!!!!!
 			if bartolini=="SI":
 				try:#INSERIMENTO IN TRTAB00F
-					curs.execute("INSERT INTO CTEDATBOR.TRTAB00F (TBATRC,TBCDTB,TBCDEL,TBDETA,TBDTCR,TBDTAG,TBPFUT) VALUES ('','BRT','"+elemento+"CDE','"+ragsocvettore+"','"+data+"','000000','"+utente+"')")
+					curs.execute("INSERT INTO CTEDATBOR.TRTAB00F (TBATRC,TBCDTB,TBCDEL,TBDETA,TBDTCR,TBDTAG,TBPFUT) VALUES ('','BRT','       "+elemento+"','"+ragsocvettore+"','"+data+"','000000','"+utente+"')")
 				except:
 					errore=1
 			if errore==0:#FINALMENTE COMMITTIAMO TUTTO!
-				#curs.execute("commit")
+				curs.execute("commit")
 				app.showLabel("avviso1")
 				app.setLabel("avviso1","RECORD "+elemento+" INSERITO")
 				app.setLabelFg("avviso1", "green")#NOMELABEL, COLORE SFONDO
@@ -287,17 +295,21 @@ def press(button):
 ###############################################################TASTO RICERCA		
 			
 	if button == "Ricerca":
-		codcli=app.getEntry("codicecliente")
-		cursiq.execute("SELECT e_mail FROM DBA.clienti_email where codice_cliente='"+codcli+"'")
-		rows=cursiq.fetchall() 
+		campi() #POI NASCONDO GLI AVVISI DATO CHE è UNA RICERCA E NON DEVO CONTROLLARE I CAMPI
+		app.hideLabel("avviso1") #nascondo avviso1 di comodo per avvisi
+		app.hideLabel("avviso2") #nascondo avviso1 di comodo per avvisi
+		curs.execute("SELECT TRCDEL FROM CTEGRPDAT.TRTRA00F where TRCDEC='"+codvettore+"'") #CERCO IL CODICE S72 SU TRTRA00F
+		rows=curs.fetchall() 
+		#print(rows[0][0])
 		esiste=len(rows)
 		if esiste>0:
-			row=rows[0]
-			email=row[0]
-			app.setEntry("email",email)
+			elemento=str(rows[0][0])
+			app.showLabel("avviso1")
+			app.setLabel("avviso1","CODICE ELEMENTO SILOG: "+elemento)
+			app.setLabelFg("avviso1", "green")#NOMELABEL, COLORE SFONDO
 		else:
 			app.showLabel("avviso1")
-			app.setLabel("avviso1","CLIENTE INESISTENTE")
+			app.setLabel("avviso1","CORRIERE INESISTENTE")
 			app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
 ###############################################################FINE TASTO RICERCA
 
