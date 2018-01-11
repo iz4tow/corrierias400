@@ -6,6 +6,12 @@ import jpype
 
 import time
 
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+
 
 
 #CONNESSIONE A DB2
@@ -33,6 +39,18 @@ for riga in file:
 		if impostazione=='letter_range':
 			letter_range=valore
 			letter_range=letter_range.replace("\n","")
+		if impostazione=='contatto_interno':
+			contatto_interno=valore
+			contatto_interno=contatto_interno.replace("\n","")
+		if impostazione=='mailuser':
+			user=valore
+			user=user.replace("\n","")
+		if impostazione=='mailpassword':
+			password=valore
+			password=password.replace("\n","")
+		if impostazione=='mail':
+			fromaddr=valore
+			fromaddr=fromaddr.replace("\n","")
 ##############################################FINE FILE INI IMPOSAZIONI###################################################################
 
 
@@ -44,6 +62,61 @@ def checkStop():
 	#app.setStopFunction(checkStop)
 ##########################################################################################################################################
 ###########################################FINE USCITA APPLICAZIONE CON CONTROLLO#########################################################
+##########################################################################################################################################
+
+##########################################################################################################################################
+###########################################MAIL RIEPILOGO A CONTATTO INTERNO##############################################################
+##########################################################################################################################################
+def mail_controllo():
+	global contatto_interno
+	global user
+	global password
+	global fromaddr
+	
+	global codcli
+	global codvettore
+	global ragsocvettore
+	global localita
+	global provincia
+	global cap
+	global bartolini
+	global magazzino
+	global indirizzo
+	global nazione
+	global errore_campi
+	global peso
+	global elemento
+	
+	oggi=time.strftime('%d-%m-%Y')#data di oggi
+	fine=oggi #SALVO DIVERSA IMPOSTAZIONE NELLA BANDIERA LA FINE E' OGGI
+	privacy = MIMEMultipart()
+	privacy['From'] = fromaddr
+	privacy['To'] = contatto_interno
+	privacy['Subject'] = "INSERIMENTO CORRIERI SILOG"
+
+	corpo="<h1>DATI CORRIERE INSERITI:</h1>"
+	corpo=corpo+"CODICE CLIENTE: "+codcli+"<br>"
+	corpo=corpo+"CODICE VETTORE S72: "+codvettore+"<br>"
+	corpo=corpo+"RAGIONE SOCIALE: "+ragsocvettore+"<br>"
+	corpo=corpo+"LOCALITA: "+localita+"<br>"
+	corpo=corpo+"PROVINCIA: "+provincia+"<br>"
+	corpo=corpo+"CAP: "+cap+"<br>"
+	corpo=corpo+"INDIRIZZO: "+indirizzo+"<br>"
+	corpo=corpo+"NAZIONE: "+nazione+"<br>"
+	corpo=corpo+"PESO: "+peso+"<br>"
+	corpo=corpo+"BARTOLINI: "+bartolini+"<br>"
+	corpo=corpo+"MAGAZZINO: "+magazzino+"<br>"
+	#corpo=corpo+"CODICE AS400: "+elemento+"\n"
+
+	privacy.attach(MIMEText(corpo, 'html'))
+	server = smtplib.SMTP('owa.melchioni.it', 25)
+	server.starttls()
+	server.login(user, password)
+	privacyor = privacy.as_string()
+	server.sendmail(fromaddr,contatto_interno, privacyor)
+	server.quit()
+##########################################################################################################################################
+###########################################FINE MAIL RIEPILOGO A CONTATTO INTERNO##############################################################
 ##########################################################################################################################################
 
 
@@ -223,6 +296,7 @@ def press(button):
 	global indirizzo
 	global errore_campi
 	global peso
+	global elemento
 	
 	
 ###############################################################TASTO INSERISCI
@@ -316,6 +390,7 @@ def press(button):
 				app.showLabel("avviso1")
 				app.setLabel("avviso1","RECORD "+elemento+" INSERITO")
 				app.setLabelFg("avviso1", "green")#NOMELABEL, COLORE SFONDO
+				mail_controllo()
 			else:
 				app.showLabel("avviso2")
 				app.setLabel("avviso2","!!! ERRORE GRAVE SUL DATABASE !!!")
@@ -330,6 +405,7 @@ def press(button):
 			
 	if button == "Ricerca":
 		campi() #POI NASCONDO GLI AVVISI DATO CHE è UNA RICERCA E NON DEVO CONTROLLARE I CAMPI
+		mail_controllo()
 		app.hideLabel("avviso1") #nascondo avviso1 di comodo per avvisi
 		app.hideLabel("avviso2") #nascondo avviso1 di comodo per avvisi
 		curs.execute("SELECT TRCDEL FROM CTEGRPDAT.TRTRA00F where TRCDEC='"+codvettore+"'") #CERCO IL CODICE S72 SU TRTRA00F
@@ -386,10 +462,10 @@ app.setLabelFg("codvettore", "black")#NOMELABEL, COLORE SFONDO
 app.addEntry("codicevettore")
 app.setEntryDefault("codicevettore","Codice Vettore da S72")
 
-app.addLabel("vettore","Ragione Sociale Trasportatore") #NOMELABEL, CONTENUTO
+app.addLabel("vettore","Ragione Sociale") #NOMELABEL, CONTENUTO
 app.setLabelFg("vettore", "black")#NOMELABEL, COLORE SFONDO
 app.addEntry("ragsocvettore")
-app.setEntryDefault("ragsocvettore","Ragione Sociale Trasportatore")
+app.setEntryDefault("ragsocvettore","Ragione Sociale")
 
 app.addLabel("ind","Indirizzo") #NOMELABEL, CONTENUTO
 app.setLabelFg("ind", "black")#NOMELABEL, COLORE SFONDO
