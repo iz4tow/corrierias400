@@ -241,8 +241,8 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 	
 	peso=app.getEntry("peso").upper()
 	if peso=="":
-		peso="999999"
-	if len(peso)>6:
+		peso="9999999"
+	if len(peso)>7:
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","CAMPO ERRATO -> PESO")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
@@ -387,10 +387,10 @@ def press(button):
 					errore=1
 			if errore==0:#FINALMENTE COMMITTIAMO TUTTO!
 				curs.execute("commit")
+				mail_controllo()
 				app.showLabel("avviso1")
 				app.setLabel("avviso1","RECORD "+elemento+" INSERITO")
 				app.setLabelFg("avviso1", "green")#NOMELABEL, COLORE SFONDO
-				mail_controllo()
 			else:
 				app.showLabel("avviso2")
 				app.setLabel("avviso2","!!! ERRORE GRAVE SUL DATABASE !!!")
@@ -405,12 +405,10 @@ def press(button):
 			
 	if button == "Ricerca":
 		campi() #POI NASCONDO GLI AVVISI DATO CHE è UNA RICERCA E NON DEVO CONTROLLARE I CAMPI
-		mail_controllo()
 		app.hideLabel("avviso1") #nascondo avviso1 di comodo per avvisi
 		app.hideLabel("avviso2") #nascondo avviso1 di comodo per avvisi
 		curs.execute("SELECT TRCDEL FROM CTEGRPDAT.TRTRA00F where TRCDEC='"+codvettore+"'") #CERCO IL CODICE S72 SU TRTRA00F
 		rows=curs.fetchall() 
-		#print(rows[0][0])
 		esiste=len(rows)
 		if esiste>0:
 			elemento=str(rows[0][0])
@@ -462,7 +460,7 @@ app.setLabelFg("codvettore", "black")#NOMELABEL, COLORE SFONDO
 app.addEntry("codicevettore")
 app.setEntryDefault("codicevettore","Codice Vettore da S72")
 
-app.addLabel("vettore","Ragione Sociale") #NOMELABEL, CONTENUTO
+app.addLabel("vettore","Descrizione Vettore") #NOMELABEL, CONTENUTO
 app.setLabelFg("vettore", "black")#NOMELABEL, COLORE SFONDO
 app.addEntry("ragsocvettore")
 app.setEntryDefault("ragsocvettore","Ragione Sociale")
