@@ -251,7 +251,7 @@ def campi(): #FUNZIONE RICHIAMATA PER VALORIZZARE LE VARIABILI DAI CAMPI E CONTR
 		
 	
 	nazione=app.getEntry("nazione").upper()
-	if len(nazione)!=2:
+	if len(nazione)>2:
 		app.showLabel("avviso1")
 		app.setLabel("avviso1","CAMPO ERRATO -> NAZIONE")
 		app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
@@ -407,11 +407,45 @@ def press(button):
 		campi() #POI NASCONDO GLI AVVISI DATO CHE è UNA RICERCA E NON DEVO CONTROLLARE I CAMPI
 		app.hideLabel("avviso1") #nascondo avviso1 di comodo per avvisi
 		app.hideLabel("avviso2") #nascondo avviso1 di comodo per avvisi
-		curs.execute("SELECT TRCDEL FROM CTEGRPDAT.TRTRA00F where TRCDEC='"+codvettore+"'") #CERCO IL CODICE S72 SU TRTRA00F
-		rows=curs.fetchall() 
-		esiste=len(rows)
-		if esiste>0:
+		
+		###########RICERCA CORRIERE
+		esiste=0
+		if len(codvettore)>0:
+			curs.execute("SELECT TRCDEL FROM CTEGRPDAT.TRTRA00F where TRCDEC='"+codvettore+"'") #CERCO IL CODICE S72 SU TRTRA00F
+			rows=curs.fetchall() 
+			esiste=len(rows)
+		if esiste>0 and len(codvettore):
 			elemento=str(rows[0][0])
+			curs.execute("SELECT BTRAGS FROM CTEDATBOR.BATRA00F where BTCTRA='"+codvettore+"'") #CERCO IL CODICE S72 SU TRTRA00F
+			rows=curs.fetchall() 
+			ragsocvettore=str(rows[0][0])
+			curs.execute("SELECT VPPMAX,VPCMAG FROM CTEDATBOR.TXVET20F where VPCVET='"+elemento+"'") #CERCO IL CODICE S72 SU TRTRA00F
+			rows=curs.fetchall() 
+			try:
+				peso=str(rows[0][0]).replace(".0","")
+			except:
+				peso="9999999"
+			try:
+				magazzino=str(rows[0][1])
+			except:
+				magazzino="***"
+			elemento=elemento.strip()#VIA GLI SPAZI BIANCHI!!!
+			curs.execute("SELECT TBCDTB FROM CTEDATBOR.TRTAB00F where TBCDEL='       "+elemento+"'") #CERCO elemento su tabella bartolini
+			bartolini=curs.fetchall()
+				
+			#PARTE GRAFICA
+			app.setEntry("ragsocvettore",ragsocvettore)
+			app.setEntry("peso",peso)
+			if magazzino=="BOR":
+				app.setRadioButton("magazzino","BORGHETTO")
+			if magazzino=="AUT":
+				app.setRadioButton("magazzino","TREZZANO")
+			if magazzino=="***":
+				app.setRadioButton("magazzino","TUTTI")
+			if len(bartolini)>0:
+				app.setRadioButton("bartolini","SI")
+			else:
+				app.setRadioButton("bartolini","NO")
 			app.showLabel("avviso1")
 			app.setLabel("avviso1","CODICE ELEMENTO SILOG: "+elemento)
 			app.setLabelFg("avviso1", "green")#NOMELABEL, COLORE SFONDO
@@ -419,6 +453,33 @@ def press(button):
 			app.showLabel("avviso1")
 			app.setLabel("avviso1","CORRIERE INESISTENTE")
 			app.setLabelFg("avviso1", "red")#NOMELABEL, COLORE SFONDO
+		
+		
+		###########RICERCA CLIENTE
+		esiste=0
+		if len(codcli)>0:
+			curs.execute("SELECT DERAGS,DEINDI,DELOCA,DEPROV,DENAZI,DECAPC FROM CTEDATBOR.BADES00F where DECEXT='"+codcli+"'") #CERCO IL CODICE S72 SU TRTRA00F
+			rows=curs.fetchall() 
+			esiste=len(rows)
+		if esiste>0 and len(codcli)>0:
+			ragsoccliente=str(rows[0][0])
+			indirizzo=str(rows[0][1])
+			localita=str(rows[0][2])
+			provincia=str(rows[0][3])
+			nazione=str(rows[0][4])
+			cap=str(rows[0][5])
+			app.setEntry("indirizzo",indirizzo)
+			app.setEntry("localita",localita)
+			app.setEntry("provincia",provincia)
+			app.setEntry("nazione",nazione)
+			app.setEntry("cap",cap)
+
+		else:
+			app.showLabel("avviso1")
+			app.setLabel("avviso2","CLIENTE INESISTENTE")
+			app.setLabelFg("avviso2", "red")#NOMELABEL, COLORE SFONDO
+			
+			
 ###############################################################FINE TASTO RICERCA
 
 
